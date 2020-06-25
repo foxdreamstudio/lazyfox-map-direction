@@ -16,9 +16,7 @@ class LazyfoxMapDirection extends Component {
   }
 
   componentWillUnmount = () => {
-    if(this.newPromise?.reject){
-      this.newPromise.reject();
-    }
+    this._promisessHandler.resolve();
   }
 
   componentDidUpdate = (prevProps) => {
@@ -28,6 +26,7 @@ class LazyfoxMapDirection extends Component {
     }
   };
 
+  _promisessHandler = {resolve:()=>null, reject:()=>null};
   init = (props) => {
     if(this.newPromise?.reject){
       this.newPromise.reject();
@@ -37,7 +36,9 @@ class LazyfoxMapDirection extends Component {
       index: 0
     });
     if (props.wayPoint.length >= 2) {
-      this.newPromise = new Promise((resolve, reject) => {
+      this._promisessHandler.resolve();
+      new Promise((resolve, reject) => {
+        this._promisessHandler = {resolve, reject};
         this.getRoute();
       })
     }
@@ -78,9 +79,7 @@ class LazyfoxMapDirection extends Component {
           if (this.state.index <= state.wayPoint.length - 1) {
             this.getRoute();
           }else{
-            if(this.newPromise?.reject){
-              this.newPromise.resolve();
-            }
+            this._promisessHandler.resolve();
             props.onFinish({
               coordinates: this.state.coordinates,
               location: this.state.wayPoint,
@@ -95,9 +94,7 @@ class LazyfoxMapDirection extends Component {
             this.getRoute();
           }else{
             props.onError(e);
-            if(this.newPromise?.reject){
-              this.newPromise.reject();
-            }
+            this._promisessHandler.resolve();
           }
         });
       });
