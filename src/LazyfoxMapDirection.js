@@ -29,6 +29,9 @@ class LazyfoxMapDirection extends Component {
   };
 
   init = (props) => {
+    if(this.newPromise?.reject){
+      this.newPromise.reject();
+    }
     this.setState({ 
       wayPoint: foxArray(getLocation(props.wayPoint)).chunk(props.wayPointLimit) ,
       index: 0
