@@ -1,0 +1,48 @@
+{
+  "name": "lazyfox-map-direction",
+  "version": "1.0.0",
+  "description": "this is a polyline distance renderer for react and react-nativ apps inspire by my last project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "react-native run-android"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foxdreamstudio/lazyfox-map-direction.git"
+  },
+  "keywords": [
+    "lazyfox-map-direction",
+    "lazyfox map direction",
+    "map-direction",
+    "react-nativ lazyfox-map-direction",
+    "react lazyfox-map-direction",
+    "react map-direction",
+    "react-native",
+    "react-component",
+    "react-native-component",
+    "react native component",
+    "react",
+    "react native",
+    "mobile",
+    "ios",
+    "android",
+    "web",
+    "ui",
+    "lazyfox",
+    "foxdream",
+    "maps",
+    "distance"
+  ],
+  "author": "Ridwan Foxdream",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foxdreamstudio/lazyfox-map-direction/issues"
+  },
+  "homepage": "https://github.com/foxdreamstudio/lazyfox-map-direction#readme",
+  "devDependencies": {
+    "metro-react-native-babel-preset": "^0.53.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
