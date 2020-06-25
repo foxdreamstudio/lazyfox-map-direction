@@ -16,13 +16,16 @@ class LazyfoxMapDirection extends Component {
 
   componentDidUpdate = (prevProps) => {
     const { props } = this;
-    if (prevProps.wayPoint !== props.wayPoint) {
+    if (prevProps.wayPoint !== props.wayPoint || prevProps.apiKey !== props.apiKey || prevProps.mode !== props.mode) {
       this.init(props);
     }
   };
 
   init = (props) => {
-    this.setState({ wayPoint: foxArray(getLocation(props.wayPoint)).chunk(props.wayPointLimit) });
+    this.setState({ 
+      wayPoint: foxArray(getLocation(props.wayPoint)).chunk(props.wayPointLimit) ,
+      index: 0
+    });
     if (props.wayPoint.length >= 2) {
       this.getRoute();
     }
