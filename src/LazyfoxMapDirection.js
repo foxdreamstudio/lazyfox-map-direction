@@ -28,15 +28,12 @@ class LazyfoxMapDirection extends Component {
 
   _promisessHandler = {resolve:()=>null, reject:()=>null};
   init = (props) => {
-    if(this.newPromise?.reject){
-      this.newPromise.reject();
-    }
+    this._promisessHandler.reject();
     this.setState({ 
       wayPoint: foxArray(getLocation(props.wayPoint)).chunk(props.wayPointLimit) ,
       index: 0
     });
     if (props.wayPoint.length >= 2) {
-      this._promisessHandler.resolve();
       new Promise((resolve, reject) => {
         this._promisessHandler = {resolve, reject};
         this.getRoute();
@@ -54,7 +51,7 @@ class LazyfoxMapDirection extends Component {
     const newDestination = state.wayPoint[state.index];
     params.push( `destination=${newDestination[newDestination?.length - 1]}`);
     if(newDestination){
-      params.push( `waypoints=${newDestination.join('|')}`);
+      params.push( `waypoints=optimize:true|${newDestination.join('|')}`);
     }
     if (state.index > 0) {
       const newOrigin = state.wayPoint[state.index - 1];
