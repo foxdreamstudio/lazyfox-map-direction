@@ -29,9 +29,14 @@ class LazyfoxMapDirection extends Component {
   _promisessHandler = {resolve:()=>null, reject:()=>null};
   init = (props) => {
     this._promisessHandler.reject();
+    const tempWayPoint =  foxArray(getLocation(props.wayPoint)).chunk(props.wayPointLimit) ;
     this.setState({ 
-      wayPoint: foxArray(getLocation(props.wayPoint)).chunk(props.wayPointLimit) ,
-      index: 0
+      wayPoint: tempWayPoint,
+      index: 0,
+      coordinates: [],
+      fare: [],
+      waypointOrder: [],
+      location: tempWayPoint,
     });
     if (props.wayPoint.length >= 2) {
       new Promise((resolve, reject) => {
@@ -66,10 +71,18 @@ class LazyfoxMapDirection extends Component {
       .then((response) => response.json())
       .then((responseJson) => {
         if (responseJson.routes?.length > 0) {
-          const newCoords = lineDecoder(responseJson.routes[0].overview_polyline?.points);
+          const route = responseJson?.routes[0];
+					const newCoords = route?.legs?.reduce((carry, curr) => {
+									return [
+										...carry,
+										...lineDecoder(curr.steps),
+									];
+								}, [])
           const coordinates = [...state.coordinates, ...newCoords];
           this.setState({
             coordinates,
+            fare: route.fare,
+						waypointOrder: route.waypoint_order,
           });
         }
         this.setState({ index: this.state.index + 1 }, () => {
@@ -79,6 +92,8 @@ class LazyfoxMapDirection extends Component {
             this._promisessHandler.resolve();
             props.onFinish({
               coordinates: this.state.coordinates,
+              fare: this.state.fare,
+              waypointOrder: this.state.waypointOrder,
               location: this.state.wayPoint,
             })
           }
@@ -98,11 +113,11 @@ class LazyfoxMapDirection extends Component {
   };
 
   render() {
-    const { coordinates } = this.state;
+    const { coordinates, fare, waypointOrder } = this.state;
     if (!coordinates) {
       return null;
     }
-    return this.props.renderLine(coordinates);
+    return this.props.renderLine({coordinates, fare, waypointOrder});
   }
 }
 

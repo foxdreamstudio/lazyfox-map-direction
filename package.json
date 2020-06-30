@@ -1,6 +1,6 @@
 {
   "name": "lazyfox-map-direction",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "this is a polyline distance renderer for react and react-nativ apps inspire by my last project.",
   "main": "index.js",
   "scripts": {
