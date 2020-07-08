@@ -69,7 +69,8 @@ LazyfoxMapDirection.defaultProps = {
   wayPointLimit: 2,
   onError: () => null,
   onFinish:() => null,
-  renderLine: () => null
+  renderLine: () => null,
+  onStart:() => null
 };
 
 ```
