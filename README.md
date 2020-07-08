@@ -31,14 +31,16 @@ export default class App extends Component<Props> {
   render() {
     const location = [
       {latitude: -33.873273, longitude: 151.204973},
-      {latitude: -33.873273, longitude: 151.204973}
+      {latitude: -33.873273, longitude: 151.304973},
+      {latitude: -33.873273, longitude: 151.404973},
+      {latitude: -33.873273, longitude: 151.504973}
     ]
     return (
       <MapView >
         { location?.length > 0 &&
           <LazyfoxMapDirection 
             apiKey={GOOGLE_KEY} // google maps api 
-            wayPoint = {daysLocation}  // array
+            wayPoint = {location}  // array
             wayPointLimit = {10} // optional
             renderLine={(coordinates)=>(
               <Polyline coordinates = {coordinates} />

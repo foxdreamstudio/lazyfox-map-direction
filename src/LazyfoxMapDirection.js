@@ -54,13 +54,15 @@ class LazyfoxMapDirection extends Component {
       `mode=${props.mode}`,
     ];
     const newDestination = state.wayPoint[state.index];
-    params.push( `destination=${newDestination[newDestination?.length - 1]}`);
+    const nextPoint = newDestination?.length > 0 ? newDestination?.length - 1 : 0;
+    params.push( `destination=${newDestination[nextPoint]}`);
     if(newDestination){
       params.push( `waypoints=optimize:true|${newDestination.join('|')}`);
     }
     if (state.index > 0) {
       const newOrigin = state.wayPoint[state.index - 1];
-      params.push(`origin=${newOrigin[newOrigin.length - 1]}`);
+      const nextOriginPoint = newOrigin?.length > 0 ? newOrigin?.length - 1 : 0;
+      params.push(`origin=${newOrigin[nextOriginPoint]}`);
     } else {
       const newOrigin = state.wayPoint[state.index];
       params.push(`origin=${newOrigin[0]}`);
