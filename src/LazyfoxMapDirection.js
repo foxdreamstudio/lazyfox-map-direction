@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { lineDecoder, foxArray, getLocation } from './LazyFoxUtils';
+import { lineDecoder, foxArray, getLocation, WaitingFrameRefresh } from './LazyFoxUtils';
 class LazyfoxMapDirection extends Component {
   constructor(props) {
     super(props);
@@ -22,50 +22,55 @@ class LazyfoxMapDirection extends Component {
   componentDidUpdate = (prevProps) => {
     const { props } = this;
     if (prevProps.wayPoint !== props.wayPoint || prevProps.apiKey !== props.apiKey || prevProps.mode !== props.mode) {
+      this._index = 0;
       this.init(props);
     }
   };
 
   _promisessHandler = {resolve:()=>null, reject:()=>null};
-  init = (props) => {
+  _index: 0;
+  init = async(props) => {
     this.props.onStart(true);
     this._promisessHandler.reject();
-    const tempWayPoint =  foxArray(getLocation(props.wayPoint)).chunk(props.wayPointLimit) ;
+    const tempWayPoint =  await foxArray(getLocation(props.wayPoint)).chunk(props.wayPointLimit) ;
     this.setState({ 
       wayPoint: tempWayPoint,
-      index: 0,
       coordinates: [],
       fare: [],
       waypointOrder: [],
       location: tempWayPoint,
     });
+    this._index = 0;
     if (props.wayPoint.length >= 2) {
       new Promise((resolve, reject) => {
         this._promisessHandler = {resolve, reject};
         this.getRoute();
       })
+    }else{
+      this.props.onError(true);
     }
   };
 
-  getRoute = () => {
+  getRoute = async() => {
+    new WaitingFrameRefresh();
     const { props, state } = this;
     const url = 'https://maps.googleapis.com/maps/api/directions/json?';
     const params = [
       `key=${props.apiKey}`,
       `mode=${props.mode}`,
     ];
-    const newDestination = state.wayPoint[state.index];
+    const newDestination = state.wayPoint[this._index];
     const nextPoint = newDestination?.length > 0 ? newDestination?.length - 1 : 0;
     params.push( `destination=${newDestination[nextPoint]}`);
     if(newDestination){
       params.push( `waypoints=optimize:true|${newDestination.join('|')}`);
     }
-    if (state.index > 0) {
-      const newOrigin = state.wayPoint[state.index - 1];
+    if (this._index > 0) {
+      const newOrigin = state.wayPoint[this._index - 1];
       const nextOriginPoint = newOrigin?.length > 0 ? newOrigin?.length - 1 : 0;
       params.push(`origin=${newOrigin[nextOriginPoint]}`);
     } else {
-      const newOrigin = state.wayPoint[state.index];
+      const newOrigin = state.wayPoint[this._index];
       params.push(`origin=${newOrigin[0]}`);
     }
 
@@ -88,30 +93,28 @@ class LazyfoxMapDirection extends Component {
 						waypointOrder: route.waypoint_order,
           });
         }
-        this.setState({ index: this.state.index + 1 }, () => {
-          if (this.state.index <= state.wayPoint.length - 1) {
-            this.getRoute();
-          }else{
-            this._promisessHandler.resolve();
-            props.onFinish({
-              coordinates: this.state.coordinates,
-              fare: this.state.fare,
-              waypointOrder: this.state.waypointOrder,
-              location: this.state.wayPoint,
-            })
-          }
-        });
+        if(this._index + 1 < state.wayPoint.length - 1){
+          this._index +=1;
+          this.getRoute();
+        }else{
+          this._promisessHandler.resolve();
+          props.onFinish({
+            coordinates: this.state.coordinates,
+            fare: this.state.fare,
+            waypointOrder: this.state.waypointOrder,
+            location: this.state.wayPoint,
+          })
+        }
       })
       .catch((e) => {
         console.warn(e);
-        this.setState({ index: state.index + 1 }, () => {
-          if (this.state.index <= state.wayPoint.length - 1) {
-            this.getRoute();
-          }else{
-            props.onError(e);
-            this._promisessHandler.resolve();
-          }
-        });
+        if(this._index + 1 < state.wayPoint.length - 1){
+          this._index +=1;
+          this.getRoute();
+        }else{
+          props.onError(e);
+          this._promisessHandler.resolve();
+        }
       });
   };
 

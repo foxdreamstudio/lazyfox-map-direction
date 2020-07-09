@@ -51,4 +51,23 @@ const getLocation = (arr) => {
   return temp;
 };
 
-export { lineDecoder, foxArray, getLocation };
+
+const WaitingFrameRefresh = () => {
+  return new Promise(function (resolve, reject) {
+    requestAnimationFrame(function () {
+      resolve();
+    });
+  });
+};
+
+/* Applies `fn` to each element of `collection`, iterating once per frame */
+WaitingFrameRefresh.mapInFrames = function (collection, fn) {
+  var queue = Promise.resolve();
+  var values = [];
+  collection.forEach((item) => {
+    queue = queue.then(() => nextFrame().then(() => values.push(fn(item))));
+  });
+  return queue.then(() => values);
+};
+
+export { lineDecoder, foxArray, getLocation, WaitingFrameRefresh };
