@@ -8,7 +8,8 @@ React and React-native component to render distance from google map api
 ## Preview
 this preview from my last project
 
-![alt text](https://github.com/foxdreamstudio/lazyfox-map-direction/blob/media/image/media/example.jpeg)
+![lazyfox-map-direction](https://github.com/foxdreamstudio/lazyfox-map-direction/blob/media/image/media/example.jpg)
+
 
 
 ## Prerequisites
