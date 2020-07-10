@@ -93,7 +93,7 @@ class LazyfoxMapDirection extends Component {
 						waypointOrder: route.waypoint_order,
           });
         }
-        if(this._index + 1 < state.wayPoint.length - 1){
+        if(this._index + 1 <= state.wayPoint.length - 1){
           this._index +=1;
           this.getRoute();
         }else{
@@ -108,7 +108,7 @@ class LazyfoxMapDirection extends Component {
       })
       .catch((e) => {
         console.warn(e);
-        if(this._index + 1 < state.wayPoint.length - 1){
+        if(this._index + 1 <= state.wayPoint.length - 1){
           this._index +=1;
           this.getRoute();
         }else{
