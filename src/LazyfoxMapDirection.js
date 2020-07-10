@@ -28,7 +28,7 @@ class LazyfoxMapDirection extends Component {
   };
 
   _promisessHandler = {resolve:()=>null, reject:()=>null};
-  _index: 0;
+  _index= 0;
   init = async(props) => {
     this.props.onStart(true);
     this._promisessHandler.reject();
